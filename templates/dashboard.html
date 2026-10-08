@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CampusPulse · {{ session.role|capitalize }} dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="topbar"><a class="brand" href="/">✳ <span>campuspulse</span></a>
+    <div class="user-chip"><span>{{ session.name }}</span><b>{{ session.role|capitalize }}</b><a href="/logout">Log out</a></div>
+  </header>
+  <main class="container">
+    <div class="heading-row"><div><p class="eyebrow">{{ session.department }} · STUDENT SUCCESS</p>
+      <h1>Hello, {{ session.name.split(' ')[0] }}</h1><p class="muted">A clear view of student progress and support needs.</p></div>
+      {% if session.role in ['hod', 'dean'] %}<a class="button primary" href="#add-student">＋ Add student</a>{% endif %}
+    </div>
+    {% with messages = get_flashed_messages(with_categories=true) %}{% for category, message in messages %}<div class="notice {{ category }}">{{ message }}</div>{% endfor %}{% endwith %}
+    <section class="stats-grid">
+      <article class="stat-card"><span>Students in your view</span><strong>{{ students|length }}</strong><small>Based on your access level</small></article>
+      <article class="stat-card"><span>Average performance</span><strong>{{ average }}<small>%</small></strong><small>Attendance, marks, work and quizzes</small></article>
+      <article class="stat-card warning"><span>Priority support</span><strong>{{ attention }}</strong><small>Consider a supportive check-in</small></article>
+      <article class="stat-card"><span>Check-in recommended</span><strong>{{ checkins }}</strong><small>Keep progress under review</small></article>
+    </section>
+    <section class="panel"><div class="section-heading"><div><p class="eyebrow">COHORT OVERVIEW</p><h2>Student progress</h2></div>
+      <span class="access-pill">{{ session.role|capitalize }} access · {{ session.department }}</span></div>
+      <div class="table-wrap"><table><thead><tr><th>Student</th><th>Class</th><th>Attendance</th><th>Marks</th><th>Assignments</th><th>Quiz</th><th>Focus area</th><th>Status</th></tr></thead>
+      <tbody>{% for student in students %}<tr><td><b>{{ student.name }}</b><small>{{ student.email }}</small></td><td>{{ student.department }} · {{ student.class_name }}</td><td>{{ student.attendance|round|int }}%</td><td>{{ student.marks|round|int }}%</td><td>{{ student.assignments|round|int }}%</td><td>{{ student.quiz|round|int }}%</td><td>{{ student.weak_subject }}</td><td><span class="status {{ student.status|lower|replace(' ', '-') }}">{{ student.status }}</span></td></tr>{% else %}<tr><td colspan="8">No students available for this account.</td></tr>{% endfor %}</tbody></table></div>
+    </section>
+    <section class="two-column">
+      <article class="panel"><p class="eyebrow">SUPPORT TRACKER</p><h2>Follow-up actions</h2>
+        {% for action in open_actions %}<div class="action-row"><div><b>{{ action.student_name }}</b><p>{{ action.note }}</p></div><form method="post" action="{{ url_for('close_intervention', action_id=action.id) }}"><button class="button subtle" type="submit">Mark done</button></form></div>{% else %}<p class="muted">No open actions yet.</p>{% endfor %}
+        <form class="form-stack compact" method="post" action="{{ url_for('add_intervention') }}"><label>Student<select name="student_id" required>{% for student in students %}<option value="{{ student.id }}">{{ student.name }}</option>{% endfor %}</select></label><label>Follow-up note<input name="note" maxlength="240" required placeholder="For example: check in about weekly quiz"></label><button class="button primary" type="submit">Add follow-up</button></form>
+      </article>
+      <article class="panel"><p class="eyebrow">ROLE-BASED ACCESS</p><h2>Your view is scoped</h2>
+        {% if session.role == 'professor' %}<p>You can see students assigned to your teaching account.</p>{% elif session.role == 'hod' %}<p>You can see all students in the <b>{{ session.department }}</b> department.</p>{% else %}<p>You can see students across all departments in this college demo.</p>{% endif %}
+        <div class="note-box"><b>How the status is calculated</b><p>Overall performance is the average of attendance, marks, assignments and quizzes. It is a demo signal to guide supportive conversations, not a decision about a student.</p></div>
+      </article>
+    </section>
+    {% if session.role in ['hod', 'dean'] %}<section class="panel" id="add-student"><p class="eyebrow">ROSTER MANAGEMENT</p><h2>Add a student</h2>
+      <form class="student-form" method="post" action="{{ url_for('add_student') }}">
+        <label>Student name<input name="name" required maxlength="100"></label><label>Student email<input name="email" type="email" required></label>
+        {% if session.role == 'dean' %}<label>Department<input name="department" required placeholder="CSE or IT"></label>{% endif %}
+        <label>Class<input name="class_name" required placeholder="Year 2"></label>
+        <label>Attendance %<input name="attendance" type="number" min="0" max="100" required></label>
+        <label>Marks %<input name="marks" type="number" min="0" max="100" required></label>
+        <label>Assignments %<input name="assignments" type="number" min="0" max="100" required></label>
+        <label>Quiz %<input name="quiz" type="number" min="0" max="100" required></label>
+        <button class="button primary" type="submit">Save student</button>
+      </form>
+    </section>{% endif %}
+    <footer>CampusPulse demo · Seeded sample data · {{ session.role|capitalize }} view</footer>
+  </main>
+</body>
+</html>

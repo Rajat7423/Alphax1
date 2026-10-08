@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sign in · CampusPulse</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="login-page">
+  <main class="login-card">
+    <a class="brand" href="/">✳ <span>campuspulse</span></a>
+    <p class="eyebrow">COLLEGE SUCCESS WORKSPACE</p>
+    <h1>Welcome back</h1><p class="muted">Sign in with your faculty account.</p>
+    {% if error %}<div class="notice error">{{ error }}</div>{% endif %}
+    <form method="post" class="form-stack">
+      <label>Email<input name="email" type="email" autocomplete="username" required placeholder="you@college.edu"></label>
+      <label>Password<input name="password" type="password" autocomplete="current-password" required placeholder="Enter password"></label>
+      <button class="button primary full" type="submit">Sign in</button>
+    </form>
+    <details class="demo-logins"><summary>Demo accounts for judges</summary>
+      <p><b>Professor CSE</b><br>prof@campuspulse.demo · prof123</p>
+      <p><b>Professor IT</b><br>itprof@campuspulse.demo · itprof123</p>
+      <p><b>HOD CSE</b><br>hod@campuspulse.demo · hod123</p>
+      <p><b>HOD IT</b><br>ithod@campuspulse.demo · ithod123</p>
+      <p><b>Dean</b><br>dean@campuspulse.demo · dean123</p>
+    </details>
+  </main>
+</body>
+</html>
