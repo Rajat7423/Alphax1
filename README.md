@@ -1,43 +1,45 @@
-<<<<<<< HEAD
-# CampusPulse — role-based student success demo
+# CampusPulse
 
-A local Flask + SQLite hackathon prototype. Demo records are synthetic. Professor, HOD and Dean accounts receive different data scopes.
+A college student-success workspace built with Flask and SQLite. Different signed-in roles receive different data scopes.
 
-## Run on macOS
+## Roles and access
 
-Open this folder in VS Code, choose **Terminal → New Terminal**, then run:
+- **Dean:** college-wide reports, announcements, staff accounts, student accounts and lab oversight.
+- **HOD:** department roster, attendance, progress updates, follow-ups and department announcements.
+- **Professor:** assigned student roster, attendance, grades, follow-ups and lab booking requests.
+- **Lab Assistant:** equipment inventory, maintenance status and booking approvals.
+- **Student:** only their own academic progress and college announcements.
+
+There are no pre-made demo accounts. The first Dean account is created once at `/setup` using the private `INITIAL_DEAN_KEY`. The Dean then creates staff and student accounts from the dashboard. Login requires email, password and the matching role.
+
+## Local setup
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 python3 -m pip install -r requirements.txt
+export SECRET_KEY="use-a-long-random-value"
+export INITIAL_DEAN_KEY="choose-a-private-first-setup-key"
 python3 app.py
 ```
 
-Open `http://127.0.0.1:5000` in a browser. Keep the terminal open while using the app.
+Open `http://127.0.0.1:5000/setup`, create the Dean account, then sign in at `/login`.
 
-## Demo accounts
+## Render setup
 
-| Role | Email | Password | Access |
-|---|---|---|---|
-| Professor | `prof@campuspulse.demo` | `prof123` | CSE students assigned to that professor |
-| Professor | `itprof@campuspulse.demo` | `itprof123` | IT students assigned to that professor |
-| HOD | `hod@campuspulse.demo` | `hod123` | All CSE students |
-| HOD | `ithod@campuspulse.demo` | `ithod123` | All IT students |
-| Dean | `dean@campuspulse.demo` | `dean123` | Students across both departments |
+This repository includes `render.yaml` for a Render Blueprint deployment. Set the prompted `INITIAL_DEAN_KEY` to a private, hard-to-guess value. If you already have a manually configured Render Web Service, add both `INITIAL_DEAN_KEY` and a long random `SECRET_KEY` under **Environment** before using `/setup`. Keep both values private. The one-time migration from the old demo version removes the seeded demo users, sample students and their follow-up records; make a database backup first if you have entered any records you need to keep.
 
-HOD and Dean can add student records; professors can add follow-up notes only for students in their assigned roster. Each account is checked by the backend on every data request. Login passwords are stored as hashes. The demo student records are fake examples.
+## Features
 
-## Included
+- Password-hashed accounts, role validation and account enable/disable controls
+- Role-scoped student records and dashboards
+- Attendance register with date-based updates
+- Academic progress editing and downloadable CSV reports
+- Department and college announcements
+- Student support follow-up tracker
+- Lab equipment inventory, maintenance status and time-slot booking workflow
+- Responsive layout for desktop and mobile
 
-- SQLite persistence and seeded demo cohort
-- Role-scoped student roster and cohort metrics
-- Attendance, marks, assignments, quiz scores, risk reasons and weak-subject hints
-- Support follow-up actions
-- Responsive layout for phones and desktop
-- Form validation and duplicate-email handling
+## Data and privacy
 
-The risk status is a transparent heuristic based on the average of four scores. It is a demo support signal, not a validated prediction of student outcomes. This project is for local judging with sample data; it has no account administration, password reset, or production security review. Do not use real student data in a public deployment.
-=======
-# Alpha-X
->>>>>>> 509dda5438f90ca58ba77f330ea8e7b3fc706c1f
+The application has no seeded people, student records or demo credentials. Data is stored in SQLite. Render's default filesystem is temporary, so this prototype is for judging with non-sensitive information only. Before using real college records, move the data to a persistent managed database, add backups and complete a security review. Support indicators are simple guidance signals, not validated predictions.

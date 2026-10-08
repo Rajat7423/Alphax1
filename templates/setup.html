@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Set up CampusPulse</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"></head>
+<body class="login-page">
+  <main class="login-card role-login-card">
+    <a class="brand" href="/">✳ <span>campuspulse</span></a>
+    <p class="eyebrow">ONE-TIME COLLEGE SETUP</p>
+    <h1>Create the first Dean account</h1>
+    <p class="muted">This account manages college roles, departments and student access.</p>
+    {% if not setup_enabled %}<div class="notice error">Workspace setup is locked. Set the private INITIAL_DEAN_KEY in your hosting settings before creating the first account.</div>{% endif %}
+    {% if error %}<div class="notice error">{{ error }}</div>{% endif %}
+    <form method="post" class="form-stack">
+      <label>Setup key<input name="setup_key" type="password" required autocomplete="off"></label>
+      <label>Dean name<input name="name" required maxlength="100" autocomplete="name"></label>
+      <label>College email<input name="email" type="email" required autocomplete="email"></label>
+      <label>Create password<input name="password" type="password" required minlength="10" autocomplete="new-password"><small>Use at least 10 characters.</small></label>
+      <button class="button primary full" type="submit" {% if not setup_enabled %}disabled{% endif %}>Create Dean account</button>
+    </form>
+  </main>
+  <script>document.querySelectorAll('form[method="post"]').forEach(form => { const input=document.createElement('input'); input.type='hidden'; input.name='_csrf_token'; input.value={{ csrf_token|tojson }}; form.appendChild(input); });</script>
+</body>
+</html>

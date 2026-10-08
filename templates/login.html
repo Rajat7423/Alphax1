@@ -5,23 +5,30 @@
   <title>Sign in · CampusPulse</title><link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body class="login-page">
-  <main class="login-card">
+  <main class="login-card role-login-card">
     <a class="brand" href="/">✳ <span>campuspulse</span></a>
     <p class="eyebrow">COLLEGE SUCCESS WORKSPACE</p>
-    <h1>Welcome back</h1><p class="muted">Sign in with your faculty account.</p>
+    <h1>Welcome to CampusPulse</h1>
+    <p class="muted">Sign in with the account provided by your college Dean.</p>
+    {% with messages = get_flashed_messages(with_categories=true) %}{% for category, message in messages %}<div class="notice {{ category }}">{{ message }}</div>{% endfor %}{% endwith %}
     {% if error %}<div class="notice error">{{ error }}</div>{% endif %}
     <form method="post" class="form-stack">
-      <label>Email<input name="email" type="email" autocomplete="username" required placeholder="you@college.edu"></label>
-      <label>Password<input name="password" type="password" autocomplete="current-password" required placeholder="Enter password"></label>
-      <button class="button primary full" type="submit">Sign in</button>
+      <label>Your role
+        <select name="role" required>
+          <option value="">Choose your role</option>
+          <option value="student">Student</option>
+          <option value="professor">Professor</option>
+          <option value="lab_assistant">Lab Assistant</option>
+          <option value="hod">Head of Department</option>
+          <option value="dean">Dean</option>
+        </select>
+      </label>
+      <label>College email<input name="email" type="email" autocomplete="username" required placeholder="name@college.edu"></label>
+      <label>Password<input name="password" type="password" autocomplete="current-password" required placeholder="Your password"></label>
+      <button class="button primary full" type="submit">Sign in <span aria-hidden="true">→</span></button>
     </form>
-    <details class="demo-logins"><summary>Demo accounts for judges</summary>
-      <p><b>Professor CSE</b><br>prof@campuspulse.demo · prof123</p>
-      <p><b>Professor IT</b><br>itprof@campuspulse.demo · itprof123</p>
-      <p><b>HOD CSE</b><br>hod@campuspulse.demo · hod123</p>
-      <p><b>HOD IT</b><br>ithod@campuspulse.demo · ithod123</p>
-      <p><b>Dean</b><br>dean@campuspulse.demo · dean123</p>
-    </details>
+    <div class="info-note"><span>✦</span><p><b>Secure role access</b><br>Your role is checked against your college account. Ask your Dean if you need an account or access update.</p></div>
   </main>
+  <script>document.querySelectorAll('form[method="post"]').forEach(form => { const input=document.createElement('input'); input.type='hidden'; input.name='_csrf_token'; input.value={{ csrf_token|tojson }}; form.appendChild(input); });</script>
 </body>
 </html>
