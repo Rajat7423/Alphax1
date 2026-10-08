@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # CampusPulse — role-based student success demo
 
 A local Flask + SQLite hackathon prototype. Demo records are synthetic. Professor, HOD and Dean accounts receive different data scopes.
@@ -37,3 +38,6 @@ HOD and Dean can add student records; professors can add follow-up notes only fo
 - Form validation and duplicate-email handling
 
 The risk status is a transparent heuristic based on the average of four scores. It is a demo support signal, not a validated prediction of student outcomes. This project is for local judging with sample data; it has no account administration, password reset, or production security review. Do not use real student data in a public deployment.
+=======
+# Alpha-X
+>>>>>>> 509dda5438f90ca58ba77f330ea8e7b3fc706c1f
